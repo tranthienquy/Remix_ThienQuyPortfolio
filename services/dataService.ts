@@ -48,6 +48,7 @@ const DEFAULT_DATA: ProfileData = {
       logoUrl: 'https://placehold.co/400x100/000000/FFFFFF/png?text=THANG+AM+VIET',
       videoUrl: 'https://www.youtube.com/watch?v=LXb3EKWsInQ', 
       projectUrl: 'https://example.com/project-1',
+      year: '2024',
       gallery: [
         'https://picsum.photos/seed/g1/400/400', 'https://picsum.photos/seed/g2/400/400', 'https://picsum.photos/seed/g3/400/400', 'https://picsum.photos/seed/g4/400/400',
         'https://picsum.photos/seed/g5/400/400', 'https://picsum.photos/seed/g6/400/400', 'https://picsum.photos/seed/g7/400/400', 'https://picsum.photos/seed/g8/400/400',
@@ -63,6 +64,7 @@ const DEFAULT_DATA: ProfileData = {
       logoUrl: 'https://placehold.co/400x100/000000/FFFFFF/png?text=GENZ+AI',
       videoUrl: 'https://www.youtube.com/watch?v=ScMzIvxBSi4',
       projectUrl: 'https://example.com/project-2',
+      year: '2023',
       gallery: [
          'https://picsum.photos/seed/ai1/400/400', 'https://picsum.photos/seed/ai2/400/400', 'https://picsum.photos/seed/ai3/400/400', 'https://picsum.photos/seed/ai4/400/400',
          'https://picsum.photos/seed/ai5/400/400', 'https://picsum.photos/seed/ai6/400/400', 'https://picsum.photos/seed/ai7/400/400', 'https://picsum.photos/seed/ai8/400/400',

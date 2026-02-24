@@ -284,7 +284,8 @@ const App: React.FC = () => {
       logoUrl: 'https://placehold.co/400x400/1a1a1a/ffffff?text=LOGO',
       gallery: Array(8).fill('https://picsum.photos/400/400'),
       videoUrl: '',
-      projectUrl: ''
+      projectUrl: '',
+      year: new Date().getFullYear().toString()
     };
     updateField('portfolio', [...data.portfolio, newItem]);
   };
@@ -563,140 +564,177 @@ const App: React.FC = () => {
                   </div>
              </div>
 
-             <div className="space-y-24 md:space-y-40">
-                 {data.portfolio.map((item, index) => (
-                     <div key={item.id} className="relative group/project cursor-auto">
-                         {isAdmin && <DeleteButton onClick={() => deletePortfolioItem(index)} />}
-                         {isAdmin && <div className="absolute -top-8 right-2 md:right-10 flex gap-2"><MoveButton direction="up" onClick={() => movePortfolioItem(index, 'up')} disabled={index === 0} /><MoveButton direction="down" onClick={() => movePortfolioItem(index, 'down')} disabled={index === data.portfolio.length - 1} /></div>}
-
-                         <div className="flex flex-col lg:flex-row gap-8 md:gap-12 items-start">
-                             
-                             {/* SIDEBAR LEFT (Logo & Buttons) */}
-                             <div className="lg:w-[320px] shrink-0 w-full space-y-4 md:space-y-6">
-                                  {/* Project Logo Box */}
-                                  <div className="aspect-square bg-[#0f111a] rounded-2xl border border-white/5 p-6 md:p-8 flex items-center justify-center overflow-hidden shadow-2xl">
-                                      <EditImage 
-                                        src={item.logoUrl || ''}
-                                        alt="Project Logo"
-                                        onImageChange={(url) => updatePortfolioItem(index, 'logoUrl', url)}
-                                        isEditing={isAdmin}
-                                        className="w-full h-full object-contain brightness-110 contrast-125" 
-                                      />
-                                  </div>
-
-                                  {/* Action Buttons */}
-                                  <div className="space-y-3">
-                                      <a 
-                                        href={item.projectUrl || '#'} 
-                                        target="_blank" 
-                                        rel="noopener noreferrer"
-                                        className={`w-full py-3 md:py-4 px-4 md:px-6 bg-[#0a0f1c] hover:bg-[#1a2538] border border-white/10 rounded-xl flex items-center justify-between text-[10px] md:text-xs font-bold tracking-[0.2em] text-blue-400 group/btn transition-all uppercase ${!item.projectUrl && !isAdmin ? 'pointer-events-none opacity-50' : ''}`}
-                                      >
-                                          <span>Visit Project</span>
-                                          <ArrowRight size={16} className="group-hover/btn:translate-x-1 transition-transform" />
-                                      </a>
-                                      
-                                      {isAdmin && (
-                                          <div className="p-3 bg-black/50 border border-blue-500/30 rounded-xl space-y-2">
-                                              <span className="text-[8px] md:text-[10px] text-blue-400 font-bold uppercase tracking-widest">Link:</span>
-                                              <input 
-                                                type="text" 
-                                                value={item.projectUrl || ''} 
-                                                onChange={(e) => updatePortfolioItem(index, 'projectUrl', e.target.value)} 
-                                                placeholder="Paste URL..." 
-                                                className="w-full bg-white/5 border border-white/10 p-2 text-[8px] md:text-[10px] text-white focus:outline-none focus:border-blue-500"
-                                              />
-                                          </div>
-                                      )}
-                                  </div>
-                             </div>
-
-                             {/* CONTENT RIGHT */}
-                             <div className="flex-1 w-full space-y-4 md:space-y-6">
-                                  {/* Metadata/Role */}
-                                  <StyledEditableText 
-                                    id={`proj_role_${item.id}`}
-                                    tagName="p"
-                                    value={item.role ? `/ ${item.role.split('/').map(r => r.trim()).join(' / ')}` : "/ PROJECT ROLE"}
-                                    onChange={(val) => updatePortfolioItem(index, 'role', val)}
-                                    isEditing={isAdmin}
-                                    className="text-gray-500 text-[8px] md:text-xs font-bold tracking-[0.3em] uppercase"
-                                    customStyle={data.textStyles[`proj_role_${item.id}`]}
-                                    onStyleUpdate={(s) => updateTextStyle(`proj_role_${item.id}`, s)}
-                                  />
-
-                                  {/* Title */}
-                                  <StyledEditableText
-                                    id={`proj_title_${item.id}`}
-                                    tagName="h3"
-                                    value={item.title}
-                                    onChange={(val) => updatePortfolioItem(index, 'title', val)}
-                                    isEditing={isAdmin}
-                                    className="font-body text-2xl md:text-5xl lg:text-6xl font-bold text-white leading-tight"
-                                    customStyle={data.textStyles[`proj_title_${item.id}`]}
-                                    onStyleUpdate={(s) => updateTextStyle(`proj_title_${item.id}`, s)}
-                                  />
-
-                                  {/* Description */}
-                                  <StyledEditableText
-                                    id={`proj_desc_${item.id}`}
-                                    tagName="p"
-                                    value={item.description}
-                                    onChange={(val) => updatePortfolioItem(index, 'description', val)}
-                                    isEditing={isAdmin}
-                                    className="text-gray-400 leading-relaxed font-light text-sm md:text-xl max-w-4xl"
-                                    multiline
-                                    customStyle={data.textStyles[`proj_desc_${item.id}`]}
-                                    onStyleUpdate={(s) => updateTextStyle(`proj_desc_${item.id}`, s)}
-                                  />
-
-                                  {/* Video Player */}
-                                  <div className="aspect-video bg-[#0a0a0a] rounded-2xl overflow-hidden border border-white/5 relative shadow-2xl my-6 md:my-10">
-                                       {getYouTubeId(item.videoUrl || '') ? (
-                                            <iframe width="100%" height="100%" src={`https://www.youtube.com/embed/${getYouTubeId(item.videoUrl || '')}?rel=0&modestbranding=1&playsinline=1`} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen className="absolute inset-0 z-10 w-full h-full"></iframe>
-                                       ) : (
-                                            <EditImage src={item.imageUrl} alt={item.title} onImageChange={(url) => updatePortfolioItem(index, 'imageUrl', url)} isEditing={isAdmin} className="w-full h-full object-cover" />
-                                       )}
-                                       {isAdmin && <div className="absolute top-0 right-0 z-50 p-2 bg-black/90 w-full border-b border-blue-500/30 flex flex-col md:flex-row gap-2"><span className="text-[8px] md:text-[10px] text-blue-400 font-bold shrink-0">YOUTUBE:</span><input type="text" value={item.videoUrl || ''} onChange={(e) => updatePortfolioItem(index, 'videoUrl', e.target.value)} placeholder="Link..." className="w-full bg-white/10 text-[8px] md:text-xs border border-white/20 p-1 text-white focus:outline-none focus:border-blue-500" /></div>}
-                                  </div>
-
-                                  {/* Gallery Grid */}
-                                  <div className="pt-4 md:pt-6">
-                                       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-                                            {(item.gallery || []).map((url, gIdx) => (
-                                                <div key={gIdx} className="aspect-square rounded-xl overflow-hidden border border-white/5 group/gall relative">
-                                                     <EditImage 
-                                                        src={url} 
-                                                        alt={`Gallery ${gIdx}`} 
-                                                        onImageChange={(newUrl) => {
-                                                            const newGallery = [...(item.gallery || [])];
-                                                            newGallery[gIdx] = newUrl;
-                                                            updatePortfolioItem(index, 'gallery', newGallery);
-                                                        }} 
-                                                        isEditing={isAdmin}
-                                                        className="w-full h-full object-cover transition-transform duration-500 group-hover/gall:scale-110"
-                                                        onDelete={() => {
-                                                            const newGallery = item.gallery?.filter((_, i) => i !== gIdx);
-                                                            updatePortfolioItem(index, 'gallery', newGallery);
-                                                        }}
-                                                     />
-                                                </div>
-                                            ))}
-                                            {isAdmin && (
-                                                <button 
-                                                    onClick={() => {
-                                                        const newGallery = [...(item.gallery || []), 'https://picsum.photos/400/400'];
-                                                        updatePortfolioItem(index, 'gallery', newGallery);
-                                                    }}
-                                                    className="aspect-square border-2 border-dashed border-white/10 rounded-xl flex items-center justify-center text-gray-500 hover:text-white hover:border-blue-500 transition-all"
-                                                >
-                                                    <Plus size={24} />
-                                                </button>
-                                            )}
-                                       </div>
-                                  </div>
-                             </div>
+             <div className="space-y-32 md:space-y-48">
+                 {Object.entries(
+                     data.portfolio.reduce((acc, item) => {
+                         const year = item.year || 'Other';
+                         if (!acc[year]) acc[year] = [];
+                         acc[year].push(item);
+                         return acc;
+                     }, {} as Record<string, PortfolioItem[]>)
+                 ).sort((a, b) => b[0].localeCompare(a[0])).map(([year, items]) => (
+                     <div key={year} className="space-y-20 md:space-y-32">
+                         <div className="flex items-center gap-4">
+                             <div className="h-[1px] flex-1 bg-white/10"></div>
+                             <h3 className="text-2xl md:text-4xl font-black text-blue-500/50 tracking-widest uppercase italic">{year}</h3>
+                             <div className="h-[1px] w-12 bg-white/10"></div>
                          </div>
+                         
+                         {items.map((item) => {
+                             const originalIndex = data.portfolio.findIndex(p => p.id === item.id);
+                             return (
+                                 <div key={item.id} className="relative group/project cursor-auto">
+                                     {isAdmin && <DeleteButton onClick={() => deletePortfolioItem(originalIndex)} />}
+                                     {isAdmin && (
+                                         <div className="absolute -top-8 right-2 md:right-10 flex gap-2">
+                                             <MoveButton direction="up" onClick={() => movePortfolioItem(originalIndex, 'up')} disabled={originalIndex === 0} />
+                                             <MoveButton direction="down" onClick={() => movePortfolioItem(originalIndex, 'down')} disabled={originalIndex === data.portfolio.length - 1} />
+                                         </div>
+                                     )}
+
+                                     <div className="flex flex-col lg:flex-row gap-8 md:gap-12 items-start">
+                                         
+                                         {/* SIDEBAR LEFT (Logo & Buttons) */}
+                                         <div className="lg:w-[320px] shrink-0 w-full space-y-4 md:space-y-6">
+                                              {/* Project Logo Box */}
+                                              <div className="aspect-square bg-[#0f111a] rounded-2xl border border-white/5 p-6 md:p-8 flex items-center justify-center overflow-hidden shadow-2xl">
+                                                  <EditImage 
+                                                    src={item.logoUrl || ''}
+                                                    alt="Project Logo"
+                                                    onImageChange={(url) => updatePortfolioItem(originalIndex, 'logoUrl', url)}
+                                                    isEditing={isAdmin}
+                                                    className="w-full h-full object-contain brightness-110 contrast-125" 
+                                                  />
+                                              </div>
+
+                                              {/* Action Buttons */}
+                                              <div className="space-y-3">
+                                                  <a 
+                                                    href={item.projectUrl || '#'} 
+                                                    target="_blank" 
+                                                    rel="noopener noreferrer"
+                                                    className={`w-full py-3 md:py-4 px-4 md:px-6 bg-[#0a0f1c] hover:bg-[#1a2538] border border-white/10 rounded-xl flex items-center justify-between text-[10px] md:text-xs font-bold tracking-[0.2em] text-blue-400 group/btn transition-all uppercase ${!item.projectUrl && !isAdmin ? 'pointer-events-none opacity-50' : ''}`}
+                                                  >
+                                                      <span>Visit Project</span>
+                                                      <ArrowRight size={16} className="group-hover/btn:translate-x-1 transition-transform" />
+                                                  </a>
+                                                  
+                                                  {isAdmin && (
+                                                      <div className="p-3 bg-black/50 border border-blue-500/30 rounded-xl space-y-4">
+                                                          <div className="space-y-1">
+                                                              <span className="text-[8px] md:text-[10px] text-blue-400 font-bold uppercase tracking-widest">Year:</span>
+                                                              <input 
+                                                                type="text" 
+                                                                value={item.year || ''} 
+                                                                onChange={(e) => updatePortfolioItem(originalIndex, 'year', e.target.value)} 
+                                                                placeholder="Year (e.g. 2024)" 
+                                                                className="w-full bg-white/5 border border-white/10 p-2 text-[8px] md:text-[10px] text-white focus:outline-none focus:border-blue-500"
+                                                              />
+                                                          </div>
+                                                          <div className="space-y-1">
+                                                              <span className="text-[8px] md:text-[10px] text-blue-400 font-bold uppercase tracking-widest">Link:</span>
+                                                              <input 
+                                                                type="text" 
+                                                                value={item.projectUrl || ''} 
+                                                                onChange={(e) => updatePortfolioItem(originalIndex, 'projectUrl', e.target.value)} 
+                                                                placeholder="Paste URL..." 
+                                                                className="w-full bg-white/5 border border-white/10 p-2 text-[8px] md:text-[10px] text-white focus:outline-none focus:border-blue-500"
+                                                              />
+                                                          </div>
+                                                      </div>
+                                                  )}
+                                              </div>
+                                         </div>
+
+                                         {/* CONTENT RIGHT */}
+                                         <div className="flex-1 w-full space-y-4 md:space-y-6">
+                                              {/* Metadata/Role */}
+                                              <StyledEditableText 
+                                                id={`proj_role_${item.id}`}
+                                                tagName="p"
+                                                value={item.role ? `/ ${item.role.split('/').map(r => r.trim()).join(' / ')}` : "/ PROJECT ROLE"}
+                                                onChange={(val) => updatePortfolioItem(originalIndex, 'role', val)}
+                                                isEditing={isAdmin}
+                                                className="text-gray-500 text-[8px] md:text-xs font-bold tracking-[0.3em] uppercase"
+                                                customStyle={data.textStyles[`proj_role_${item.id}`]}
+                                                onStyleUpdate={(s) => updateTextStyle(`proj_role_${item.id}`, s)}
+                                              />
+
+                                              {/* Title */}
+                                              <StyledEditableText
+                                                id={`proj_title_${item.id}`}
+                                                tagName="h3"
+                                                value={item.title}
+                                                onChange={(val) => updatePortfolioItem(originalIndex, 'title', val)}
+                                                isEditing={isAdmin}
+                                                className="font-body text-2xl md:text-5xl lg:text-6xl font-bold text-white leading-tight"
+                                                customStyle={data.textStyles[`proj_title_${item.id}`]}
+                                                onStyleUpdate={(s) => updateTextStyle(`proj_title_${item.id}`, s)}
+                                              />
+
+                                              {/* Description */}
+                                              <StyledEditableText
+                                                id={`proj_desc_${item.id}`}
+                                                tagName="p"
+                                                value={item.description}
+                                                onChange={(val) => updatePortfolioItem(originalIndex, 'description', val)}
+                                                isEditing={isAdmin}
+                                                className="text-gray-400 leading-relaxed font-light text-sm md:text-xl max-w-4xl"
+                                                multiline
+                                                customStyle={data.textStyles[`proj_desc_${item.id}`]}
+                                                onStyleUpdate={(s) => updateTextStyle(`proj_desc_${item.id}`, s)}
+                                              />
+
+                                              {/* Video Player */}
+                                              <div className="aspect-video bg-[#0a0a0a] rounded-2xl overflow-hidden border border-white/5 relative shadow-2xl my-6 md:my-10">
+                                                   {getYouTubeId(item.videoUrl || '') ? (
+                                                        <iframe width="100%" height="100%" src={`https://www.youtube.com/embed/${getYouTubeId(item.videoUrl || '')}?rel=0&modestbranding=1&playsinline=1`} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen className="absolute inset-0 z-10 w-full h-full"></iframe>
+                                                   ) : (
+                                                        <EditImage src={item.imageUrl} alt={item.title} onImageChange={(url) => updatePortfolioItem(originalIndex, 'imageUrl', url)} isEditing={isAdmin} className="w-full h-full object-cover" />
+                                                   )}
+                                                   {isAdmin && <div className="absolute top-0 right-0 z-50 p-2 bg-black/90 w-full border-b border-blue-500/30 flex flex-col md:flex-row gap-2"><span className="text-[8px] md:text-[10px] text-blue-400 font-bold shrink-0">YOUTUBE:</span><input type="text" value={item.videoUrl || ''} onChange={(e) => updatePortfolioItem(originalIndex, 'videoUrl', e.target.value)} placeholder="Link..." className="w-full bg-white/10 text-[8px] md:text-xs border border-white/20 p-1 text-white focus:outline-none focus:border-blue-500" /></div>}
+                                              </div>
+
+                                              {/* Gallery Grid */}
+                                              <div className="pt-4 md:pt-6">
+                                                   <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+                                                        {(item.gallery || []).map((url, gIdx) => (
+                                                            <div key={gIdx} className="aspect-square rounded-xl overflow-hidden border border-white/5 group/gall relative">
+                                                                 <EditImage 
+                                                                    src={url} 
+                                                                    alt={`Gallery ${gIdx}`} 
+                                                                    onImageChange={(newUrl) => {
+                                                                        const newGallery = [...(item.gallery || [])];
+                                                                        newGallery[gIdx] = newUrl;
+                                                                        updatePortfolioItem(originalIndex, 'gallery', newGallery);
+                                                                    }} 
+                                                                    isEditing={isAdmin}
+                                                                    className="w-full h-full object-cover transition-transform duration-500 group-hover/gall:scale-110"
+                                                                    onDelete={() => {
+                                                                        const newGallery = item.gallery?.filter((_, i) => i !== gIdx);
+                                                                        updatePortfolioItem(originalIndex, 'gallery', newGallery);
+                                                                    }}
+                                                                 />
+                                                            </div>
+                                                        ))}
+                                                        {isAdmin && (
+                                                            <button 
+                                                                onClick={() => {
+                                                                    const newGallery = [...(item.gallery || []), 'https://picsum.photos/400/400'];
+                                                                    updatePortfolioItem(originalIndex, 'gallery', newGallery);
+                                                                }}
+                                                                className="aspect-square border-2 border-dashed border-white/10 rounded-xl flex items-center justify-center text-gray-500 hover:text-white hover:border-blue-500 transition-all"
+                                                            >
+                                                                <Plus size={24} />
+                                                            </button>
+                                                        )}
+                                                   </div>
+                                              </div>
+                                         </div>
+                                     </div>
+                                 </div>
+                             );
+                         })}
                      </div>
                  ))}
                  {isAdmin && <AddButton onClick={addPortfolioItem} label="Add New Project" />}

@@ -9,6 +9,7 @@ export interface PortfolioItem {
   gallery?: string[]; 
   videoUrl?: string;
   projectUrl?: string; 
+  year?: string;
 }
 
 export interface SocialLinks {
