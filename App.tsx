@@ -692,7 +692,27 @@ const App: React.FC = () => {
                                                    ) : (
                                                         <EditImage src={item.imageUrl} alt={item.title} onImageChange={(url) => updatePortfolioItem(originalIndex, 'imageUrl', url)} isEditing={isAdmin} className="w-full h-full object-cover" />
                                                    )}
-                                                   {isAdmin && <div className="absolute top-0 right-0 z-50 p-2 bg-black/90 w-full border-b border-blue-500/30 flex flex-col md:flex-row gap-2"><span className="text-[8px] md:text-[10px] text-blue-400 font-bold shrink-0">YOUTUBE:</span><input type="text" value={item.videoUrl || ''} onChange={(e) => updatePortfolioItem(originalIndex, 'videoUrl', e.target.value)} placeholder="Link..." className="w-full bg-white/10 text-[8px] md:text-xs border border-white/20 p-1 text-white focus:outline-none focus:border-blue-500" /></div>}
+                                                   {isAdmin && (
+                                                        <div className="absolute top-0 right-0 z-50 p-2 bg-black/90 w-full border-b border-blue-500/30 flex flex-col md:flex-row gap-2 items-center">
+                                                            <span className="text-[8px] md:text-[10px] text-blue-400 font-bold shrink-0">YOUTUBE:</span>
+                                                            <input 
+                                                                type="text" 
+                                                                value={item.videoUrl || ''} 
+                                                                onChange={(e) => updatePortfolioItem(originalIndex, 'videoUrl', e.target.value)} 
+                                                                placeholder="Link..." 
+                                                                className="w-full bg-white/10 text-[8px] md:text-xs border border-white/20 p-1 text-white focus:outline-none focus:border-blue-500" 
+                                                            />
+                                                            {item.videoUrl && (
+                                                                <button 
+                                                                    onClick={() => updatePortfolioItem(originalIndex, 'videoUrl', '')} 
+                                                                    className="p-1 bg-red-600/80 rounded text-white hover:bg-red-600 transition-colors shrink-0"
+                                                                    title="Remove Video"
+                                                                >
+                                                                    <Trash2 size={12} />
+                                                                </button>
+                                                            )}
+                                                        </div>
+                                                   )}
                                               </div>
 
                                               {/* Gallery Grid */}
