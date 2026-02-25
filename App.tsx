@@ -693,23 +693,40 @@ const App: React.FC = () => {
                                                         <EditImage src={item.imageUrl} alt={item.title} onImageChange={(url) => updatePortfolioItem(originalIndex, 'imageUrl', url)} isEditing={isAdmin} className="w-full h-full object-cover" />
                                                    )}
                                                    {isAdmin && (
-                                                        <div className="absolute top-0 right-0 z-50 p-2 bg-black/90 w-full border-b border-blue-500/30 flex flex-col md:flex-row gap-2 items-center">
-                                                            <span className="text-[8px] md:text-[10px] text-blue-400 font-bold shrink-0">YOUTUBE:</span>
-                                                            <input 
-                                                                type="text" 
-                                                                value={item.videoUrl || ''} 
-                                                                onChange={(e) => updatePortfolioItem(originalIndex, 'videoUrl', e.target.value)} 
-                                                                placeholder="Link..." 
-                                                                className="w-full bg-white/10 text-[8px] md:text-xs border border-white/20 p-1 text-white focus:outline-none focus:border-blue-500" 
-                                                            />
-                                                            {item.videoUrl && (
-                                                                <button 
-                                                                    onClick={() => updatePortfolioItem(originalIndex, 'videoUrl', '')} 
-                                                                    className="p-1 bg-red-600/80 rounded text-white hover:bg-red-600 transition-colors shrink-0"
-                                                                    title="Remove Video"
-                                                                >
-                                                                    <Trash2 size={12} />
-                                                                </button>
+                                                        <div className="absolute top-0 right-0 z-50 p-2 bg-black/95 w-full border-b border-blue-500/30 flex flex-col md:flex-row gap-2 items-center justify-between backdrop-blur-sm">
+                                                            {!item.videoUrl ? (
+                                                                <div className="flex items-center gap-3 w-full justify-center">
+                                                                    <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest italic">Chưa có video Youtube</span>
+                                                                    <button 
+                                                                        onClick={() => updatePortfolioItem(originalIndex, 'videoUrl', 'https://www.youtube.com/watch?v=')} 
+                                                                        className="flex items-center gap-1 px-3 py-1 bg-blue-600 rounded-full text-white text-[10px] font-bold hover:bg-blue-500 transition-all shadow-lg shadow-blue-500/20"
+                                                                    >
+                                                                        <Plus size={12} />
+                                                                        <span>THÊM YOUTUBE</span>
+                                                                    </button>
+                                                                </div>
+                                                            ) : (
+                                                                <div className="flex items-center gap-2 w-full">
+                                                                    <div className="flex items-center gap-2 bg-white/5 px-2 py-1 rounded border border-white/10 flex-1">
+                                                                        <Play size={12} className="text-red-500" />
+                                                                        <span className="text-[10px] text-blue-400 font-bold shrink-0 uppercase tracking-tighter">Youtube URL:</span>
+                                                                        <input 
+                                                                            type="text" 
+                                                                            value={item.videoUrl || ''} 
+                                                                            onChange={(e) => updatePortfolioItem(originalIndex, 'videoUrl', e.target.value)} 
+                                                                            placeholder="Dán link Youtube vào đây..." 
+                                                                            className="w-full bg-transparent text-[10px] md:text-xs text-white focus:outline-none" 
+                                                                        />
+                                                                    </div>
+                                                                    <button 
+                                                                        onClick={() => { if(window.confirm('Bạn có chắc chắn muốn xoá phần Youtube này?')) updatePortfolioItem(originalIndex, 'videoUrl', ''); }} 
+                                                                        className="flex items-center gap-1 px-3 py-1.5 bg-red-600/90 rounded-lg text-white hover:bg-red-600 transition-all shrink-0 text-[10px] font-bold shadow-lg shadow-red-500/20"
+                                                                        title="Xoá phần Youtube"
+                                                                    >
+                                                                        <Trash2 size={12} />
+                                                                        <span className="hidden sm:inline">XOÁ YOUTUBE</span>
+                                                                    </button>
+                                                                </div>
                                                             )}
                                                         </div>
                                                    )}
