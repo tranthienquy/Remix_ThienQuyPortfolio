@@ -667,7 +667,7 @@ const App: React.FC = () => {
                                                 value={item.title}
                                                 onChange={(val) => updatePortfolioItem(originalIndex, 'title', val)}
                                                 isEditing={isAdmin}
-                                                className="font-body text-2xl md:text-5xl lg:text-6xl font-bold text-white leading-tight"
+                                                className="font-inter text-[40px] md:text-[60px] font-black bg-gradient-to-r from-cyan-300 via-cyan-500 to-blue-500 bg-clip-text text-transparent leading-tight tracking-tighter"
                                                 customStyle={data.textStyles[`proj_title_${item.id}`]}
                                                 onStyleUpdate={(s) => updateTextStyle(`proj_title_${item.id}`, s)}
                                               />
