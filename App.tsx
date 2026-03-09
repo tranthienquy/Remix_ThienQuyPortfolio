@@ -413,7 +413,7 @@ const App: React.FC = () => {
             </div>
             <div className="shrink-0">
             {!isAdmin ? (
-                <button onClick={() => setShowLogin(true)} className="opacity-30 hover:opacity-100 transition-opacity p-2 border border-transparent hover:border-white/20 rounded-full cursor-pointer" title="Admin Access"><Settings size={14} /></button>
+                null
             ) : (
                 <div className="flex gap-2 md:gap-4 bg-black/80 backdrop-blur border border-white/10 p-1 rounded-lg shadow-xl items-center flex-wrap justify-end">
                     <div className="relative">
@@ -856,7 +856,16 @@ const App: React.FC = () => {
                        )}
                   </div>
              </div>
-             <div className="mt-12 md:mt-20 text-center text-gray-600 text-[8px] md:text-sm font-light uppercase tracking-widest">© {new Date().getFullYear()} Tran Thien Quy Portfolio</div>
+             <div 
+                onClick={(e) => {
+                    if (e.detail === 3) {
+                        setShowLogin(true);
+                    }
+                }}
+                className="mt-12 md:mt-20 text-center text-gray-600 text-[8px] md:text-sm font-light uppercase tracking-widest cursor-default select-none"
+             >
+                © {new Date().getFullYear()} Tran Thien Quy Portfolio
+             </div>
         </section>
       </div>
     </div>
