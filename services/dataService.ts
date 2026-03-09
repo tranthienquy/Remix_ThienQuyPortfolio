@@ -1,7 +1,7 @@
 
 import { ProfileData, PortfolioItem } from '../types';
 import { initializeApp, getApps, getApp } from 'firebase/app';
-import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
+import { getFirestore, doc, getDoc, setDoc, increment } from 'firebase/firestore';
 import { firebaseConfig } from '../firebaseConfig';
 
 const STORAGE_KEY = 'quy_portfolio_data_v3';
@@ -184,3 +184,33 @@ export const resetData = (): ProfileData => {
   localStorage.removeItem(STORAGE_KEY);
   return DEFAULT_DATA;
 }
+
+// -------------------------------------------------------------
+// ANALYTICS - VISIT TRACKING
+// -------------------------------------------------------------
+
+export const recordVisit = async (): Promise<void> => {
+  if (db) {
+    try {
+      const statsRef = doc(db, FIRESTORE_COLLECTION, 'site_stats');
+      await setDoc(statsRef, { totalVisits: increment(1) }, { merge: true });
+    } catch (error) {
+      console.error("Failed to record visit:", error);
+    }
+  }
+};
+
+export const getVisits = async (): Promise<number> => {
+  if (db) {
+    try {
+      const statsRef = doc(db, FIRESTORE_COLLECTION, 'site_stats');
+      const docSnap = await getDoc(statsRef);
+      if (docSnap.exists()) {
+        return docSnap.data().totalVisits || 0;
+      }
+    } catch (error) {
+      console.error("Failed to get visits:", error);
+    }
+  }
+  return 0;
+};
