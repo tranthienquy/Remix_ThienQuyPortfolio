@@ -180,11 +180,26 @@ const App: React.FC = () => {
     }
 
     // Social Thumbnail (OG Image) update
-    let ogImage = document.querySelector('meta[property="og:image"]');
+    const ogImage = document.querySelector('meta[property="og:image"]');
     if (ogImage && data.thumbnailUrl) {
         ogImage.setAttribute('content', data.thumbnailUrl);
     }
-  }, [data?.faviconUrl, data?.thumbnailUrl]);
+
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    if (ogTitle) {
+        ogTitle.setAttribute('content', data.siteTitle || `${data.name} - ${data.role}`);
+    }
+
+    const ogDesc = document.querySelector('meta[property="og:description"]');
+    if (ogDesc) {
+        ogDesc.setAttribute('content', data.siteDescription || data.bioContent.substring(0, 160));
+    }
+
+    const ogUrl = document.querySelector('meta[property="og:url"]');
+    if (ogUrl) {
+        ogUrl.setAttribute('content', window.location.href);
+    }
+  }, [data?.faviconUrl, data?.thumbnailUrl, data?.name, data?.role, data?.bioContent, data?.siteTitle, data?.siteDescription]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -422,6 +437,29 @@ const App: React.FC = () => {
                                     <EditImage src={data.thumbnailUrl || ""} onImageChange={(url) => updateField('thumbnailUrl', url)} isEditing={isAdmin} className="aspect-video border border-white/10 rounded-lg overflow-hidden" />
                                     <p className="text-[9px] text-gray-600 leading-tight italic">Recommended size: 1200x630px for better link sharing preview.</p>
                                 </div>
+
+                                {/* Site Title & Description */}
+                                <div className="space-y-3 pt-2 border-t border-white/5">
+                                    <div className="space-y-1">
+                                        <label className="text-[10px] text-gray-500 uppercase tracking-widest">Site Title (Social)</label>
+                                        <input 
+                                            type="text" 
+                                            value={data.siteTitle || ""} 
+                                            onChange={(e) => updateField('siteTitle', e.target.value)}
+                                            className="w-full bg-black border border-white/10 p-2 text-xs text-white focus:border-blue-500 outline-none rounded"
+                                            placeholder="Tiêu đề khi share link..."
+                                        />
+                                    </div>
+                                    <div className="space-y-1">
+                                        <label className="text-[10px] text-gray-500 uppercase tracking-widest">Site Description (Social)</label>
+                                        <textarea 
+                                            value={data.siteDescription || ""} 
+                                            onChange={(e) => updateField('siteDescription', e.target.value)}
+                                            className="w-full bg-black border border-white/10 p-2 text-xs text-white focus:border-blue-500 outline-none rounded min-h-[60px]"
+                                            placeholder="Mô tả khi share link..."
+                                        />
+                                    </div>
+                                </div>
                             </div>
                         )}
                     </div>
@@ -615,7 +653,7 @@ const App: React.FC = () => {
                                                     rel="noopener noreferrer"
                                                     className={`w-full py-3 md:py-4 px-4 md:px-6 bg-[#0a0f1c] hover:bg-[#1a2538] border border-white/10 rounded-xl flex items-center justify-between text-[10px] md:text-xs font-bold tracking-[0.2em] text-blue-400 group/btn transition-all uppercase ${!item.projectUrl && !isAdmin ? 'pointer-events-none opacity-50' : ''}`}
                                                   >
-                                                      <span>Visit Project</span>
+
                                                       <ArrowRight size={16} className="group-hover/btn:translate-x-1 transition-transform" />
                                                   </a>
                                                   

@@ -69,6 +69,8 @@ export interface ProfileData {
   logoImageUrl?: string; 
   thumbnailUrl?: string; // Ảnh thumbnail khi share link
   faviconUrl?: string;   // Icon trên tab trình duyệt
+  siteTitle?: string;    // Tiêu đề website khi share
+  siteDescription?: string; // Mô tả website khi share
   name: string;
   role: string;
   dob: string;

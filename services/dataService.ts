@@ -23,6 +23,8 @@ const DEFAULT_DATA: ProfileData = {
   logoImageUrl: "", 
   thumbnailUrl: "https://images.unsplash.com/photo-1551218808-94e220e084d2?auto=format&fit=crop&w=1200&h=630&q=80",
   faviconUrl: "https://placehold.co/32x32/000000/FFFFFF/png?text=TQ",
+  siteTitle: "Trần Thiên Quý - Event Producer",
+  siteDescription: "Portfolio of Trần Thiên Quý - Event Producer & Art Director",
   name: "Trần Thiên Quý",
   role: "Event Producer",
   dob: "08/11/1998",
@@ -131,7 +133,9 @@ const mergeData = (loaded: any): ProfileData => {
         config: migratedConfig,
         textStyles: loaded.textStyles || {},
         thumbnailUrl: loaded.thumbnailUrl || DEFAULT_DATA.thumbnailUrl,
-        faviconUrl: loaded.faviconUrl || DEFAULT_DATA.faviconUrl
+        faviconUrl: loaded.faviconUrl || DEFAULT_DATA.faviconUrl,
+        siteTitle: loaded.siteTitle || DEFAULT_DATA.siteTitle,
+        siteDescription: loaded.siteDescription || DEFAULT_DATA.siteDescription
     };
 };
 
