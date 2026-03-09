@@ -10,17 +10,17 @@ const FIRESTORE_DOC_ID = 'main_portfolio';
 
 let db: any = null;
 try {
-    if (firebaseConfig.projectId && firebaseConfig.projectId !== "PROJECT_ID") {
-        const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
-        db = getFirestore(app);
-    }
+  if (firebaseConfig.projectId && firebaseConfig.projectId !== "PROJECT_ID") {
+    const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
+    db = getFirestore(app);
+  }
 } catch (e) {
-    console.error("Firestore Init Error:", e);
+  console.error("Firestore Init Error:", e);
 }
 
 const DEFAULT_DATA: ProfileData = {
   logoText: "TQ.",
-  logoImageUrl: "", 
+  logoImageUrl: "",
   thumbnailUrl: "https://images.unsplash.com/photo-1551218808-94e220e084d2?auto=format&fit=crop&w=1200&h=630&q=80",
   faviconUrl: "https://placehold.co/32x32/000000/FFFFFF/png?text=TQ",
   siteTitle: "Trần Thiên Quý - Event Producer",
@@ -48,7 +48,7 @@ const DEFAULT_DATA: ProfileData = {
       role: 'Project Manager / Art Director',
       imageUrl: 'https://picsum.photos/seed/fes1/800/800',
       logoUrl: 'https://placehold.co/400x100/000000/FFFFFF/png?text=THANG+AM+VIET',
-      videoUrl: 'https://www.youtube.com/watch?v=LXb3EKWsInQ', 
+      videoUrl: 'https://www.youtube.com/watch?v=LXb3EKWsInQ',
       projectUrl: 'https://example.com/project-1',
       year: '2024',
       gallery: [
@@ -68,9 +68,9 @@ const DEFAULT_DATA: ProfileData = {
       projectUrl: 'https://example.com/project-2',
       year: '2023',
       gallery: [
-         'https://picsum.photos/seed/ai1/400/400', 'https://picsum.photos/seed/ai2/400/400', 'https://picsum.photos/seed/ai3/400/400', 'https://picsum.photos/seed/ai4/400/400',
-         'https://picsum.photos/seed/ai5/400/400', 'https://picsum.photos/seed/ai6/400/400', 'https://picsum.photos/seed/ai7/400/400', 'https://picsum.photos/seed/ai8/400/400',
-         'https://picsum.photos/seed/ai9/400/400', 'https://picsum.photos/seed/ai10/400/400', 'https://picsum.photos/seed/ai11/400/400', 'https://picsum.photos/seed/ai12/400/400'
+        'https://picsum.photos/seed/ai1/400/400', 'https://picsum.photos/seed/ai2/400/400', 'https://picsum.photos/seed/ai3/400/400', 'https://picsum.photos/seed/ai4/400/400',
+        'https://picsum.photos/seed/ai5/400/400', 'https://picsum.photos/seed/ai6/400/400', 'https://picsum.photos/seed/ai7/400/400', 'https://picsum.photos/seed/ai8/400/400',
+        'https://picsum.photos/seed/ai9/400/400', 'https://picsum.photos/seed/ai10/400/400', 'https://picsum.photos/seed/ai11/400/400', 'https://picsum.photos/seed/ai12/400/400'
       ]
     }
   ],
@@ -92,10 +92,10 @@ const DEFAULT_DATA: ProfileData = {
     heroLayoutSwapped: false,
     versionText: "PORTFOLIO V.1.0",
     navItems: [
-        { label: "Home", targetId: "home" },
-        { label: "Highlight", targetId: "highlights" },
-        { label: "My Work", targetId: "work" },
-        { label: "Contact", targetId: "contact" }
+      { label: "Home", targetId: "home" },
+      { label: "Highlight", targetId: "highlights" },
+      { label: "My Work", targetId: "work" },
+      { label: "Contact", targetId: "contact" }
     ],
     labelPortrait: "PORTRAIT_AVATAR",
     labelIntro: "INTRODUCTION",
@@ -109,49 +109,49 @@ const DEFAULT_DATA: ProfileData = {
 };
 
 const mergeData = (loaded: any): ProfileData => {
-    const migratedHighlights = Array.isArray(loaded.highlights) 
+  const migratedHighlights = Array.isArray(loaded.highlights)
     ? loaded.highlights.map((h: any) => ({
-        label: h.label || "HIGHLIGHT",
-        text: typeof h === 'string' ? h : (h.text || ""),
-        url: h.url || ""
+      label: h.label || "HIGHLIGHT",
+      text: typeof h === 'string' ? h : (h.text || ""),
+      url: h.url || ""
     }))
     : DEFAULT_DATA.highlights;
-    
-    const migratedConfig = { 
-        ...DEFAULT_DATA.config, 
-        ...(loaded.config || {}),
-        navItems: loaded.config?.navItems || DEFAULT_DATA.config.navItems,
-        cursorSize: loaded.config?.cursorSize || DEFAULT_DATA.config.cursorSize,
-        cursorGlowSize: loaded.config?.cursorGlowSize || DEFAULT_DATA.config.cursorGlowSize,
-        contactHeading: loaded.config?.contactHeading || DEFAULT_DATA.config.contactHeading
-    };
 
-    return { 
-        ...DEFAULT_DATA, 
-        ...loaded,
-        highlights: migratedHighlights,
-        config: migratedConfig,
-        textStyles: loaded.textStyles || {},
-        thumbnailUrl: loaded.thumbnailUrl || DEFAULT_DATA.thumbnailUrl,
-        faviconUrl: loaded.faviconUrl || DEFAULT_DATA.faviconUrl,
-        siteTitle: loaded.siteTitle || DEFAULT_DATA.siteTitle,
-        siteDescription: loaded.siteDescription || DEFAULT_DATA.siteDescription
-    };
+  const migratedConfig = {
+    ...DEFAULT_DATA.config,
+    ...(loaded.config || {}),
+    navItems: loaded.config?.navItems || DEFAULT_DATA.config.navItems,
+    cursorSize: loaded.config?.cursorSize || DEFAULT_DATA.config.cursorSize,
+    cursorGlowSize: loaded.config?.cursorGlowSize || DEFAULT_DATA.config.cursorGlowSize,
+    contactHeading: loaded.config?.contactHeading || DEFAULT_DATA.config.contactHeading
+  };
+
+  return {
+    ...DEFAULT_DATA,
+    ...loaded,
+    highlights: migratedHighlights,
+    config: migratedConfig,
+    textStyles: loaded.textStyles || {},
+    thumbnailUrl: loaded.thumbnailUrl || DEFAULT_DATA.thumbnailUrl,
+    faviconUrl: loaded.faviconUrl || DEFAULT_DATA.faviconUrl,
+    siteTitle: loaded.siteTitle || DEFAULT_DATA.siteTitle,
+    siteDescription: loaded.siteDescription || DEFAULT_DATA.siteDescription
+  };
 };
 
 export const getData = async (): Promise<ProfileData> => {
   if (db) {
-      try {
-          const docRef = doc(db, FIRESTORE_COLLECTION, FIRESTORE_DOC_ID);
-          const docSnap = await getDoc(docRef);
-          if (docSnap.exists()) {
-              const cloudData = docSnap.data();
-              localStorage.setItem(STORAGE_KEY, JSON.stringify(cloudData));
-              return mergeData(cloudData);
-          } 
-      } catch (error) {
-          console.error("Failed to load from Cloud:", error);
+    try {
+      const docRef = doc(db, FIRESTORE_COLLECTION, FIRESTORE_DOC_ID);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const cloudData = docSnap.data();
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(cloudData));
+        return mergeData(cloudData);
       }
+    } catch (error) {
+      console.error("Failed to load from Cloud:", error);
+    }
   }
 
   const stored = localStorage.getItem(STORAGE_KEY);
@@ -170,13 +170,13 @@ export const saveData = async (data: ProfileData): Promise<void> => {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
 
   if (db) {
-      try {
-          const docRef = doc(db, FIRESTORE_COLLECTION, FIRESTORE_DOC_ID);
-          await setDoc(docRef, data);
-      } catch (error) {
-          console.error("Failed to save to Cloud:", error);
-          throw error;
-      }
+    try {
+      const docRef = doc(db, FIRESTORE_COLLECTION, FIRESTORE_DOC_ID);
+      await setDoc(docRef, data);
+    } catch (error) {
+      console.error("Failed to save to Cloud:", error);
+      throw error;
+    }
   }
 };
 
@@ -193,24 +193,32 @@ export const recordVisit = async (): Promise<void> => {
   if (db) {
     try {
       const statsRef = doc(db, FIRESTORE_COLLECTION, 'site_stats');
-      await setDoc(statsRef, { totalVisits: increment(1) }, { merge: true });
+      const today = new Date().toISOString().split('T')[0];
+      await setDoc(statsRef, {
+        totalVisits: increment(1),
+        [`daily.${today}`]: increment(1)
+      }, { merge: true });
     } catch (error) {
       console.error("Failed to record visit:", error);
     }
   }
 };
 
-export const getVisits = async (): Promise<number> => {
+export const getVisits = async (): Promise<{ total: number, daily: Record<string, number> }> => {
   if (db) {
     try {
       const statsRef = doc(db, FIRESTORE_COLLECTION, 'site_stats');
       const docSnap = await getDoc(statsRef);
       if (docSnap.exists()) {
-        return docSnap.data().totalVisits || 0;
+        const data = docSnap.data();
+        return {
+          total: data.totalVisits || 0,
+          daily: data.daily || {}
+        };
       }
     } catch (error) {
       console.error("Failed to get visits:", error);
     }
   }
-  return 0;
+  return { total: 0, daily: {} };
 };

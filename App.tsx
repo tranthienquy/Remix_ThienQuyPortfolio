@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Mail, Phone, Facebook, Settings, LogOut, X, Save, RotateCcw, Play, ArrowRight, Move, MousePointer2, ExternalLink, ArrowLeftRight, Trash2, Link as LinkIcon, Cloud, CheckCircle2, Download, Upload, Edit, Loader2, Plus, ArrowUpRight, MousePointer, Award, Star, Zap, Info, Briefcase, Globe, Eye } from 'lucide-react';
+import { Mail, Phone, Facebook, Settings, LogOut, X, Save, RotateCcw, Play, ArrowRight, Move, MousePointer2, ExternalLink, ArrowLeftRight, Trash2, Link as LinkIcon, Cloud, CheckCircle2, Download, Upload, Edit, Loader2, Plus, ArrowUpRight, MousePointer, Award, Star, Zap, Info, Briefcase, Globe, Eye, BarChart3, TrendingUp } from 'lucide-react';
 import { ProfileData, PortfolioItem, HighlightItem, NavItem, CustomTextStyle } from './types';
 import { getData, saveData, resetData, recordVisit, getVisits } from './services/dataService';
 import { EditableText, EditImage, AddButton, DeleteButton, MoveButton, StyledEditableText } from './components/EditControls';
@@ -161,7 +161,8 @@ const App: React.FC = () => {
     const [showCursorSettings, setShowCursorSettings] = useState(false);
     const [showSiteSettings, setShowSiteSettings] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
-    const [visitCount, setVisitCount] = useState<number>(0);
+    const [siteStats, setSiteStats] = useState<{ total: number, daily: Record<string, number> }>({ total: 0, daily: {} });
+    const [showAnalytics, setShowAnalytics] = useState(false);
 
     useEffect(() => {
         getData().then(loadedData => {
@@ -179,7 +180,7 @@ const App: React.FC = () => {
 
     useEffect(() => {
         if (isAdmin && isFirebaseReady) {
-            getVisits().then(setVisitCount);
+            getVisits().then(setSiteStats);
         }
     }, [isAdmin, isFirebaseReady]);
 
@@ -387,6 +388,84 @@ const App: React.FC = () => {
                 </div>
             )}
 
+            {/* Analytics Modal */}
+            {showAnalytics && isAdmin && (
+                <div className="fixed inset-0 bg-black/90 z-[120] flex items-center justify-center p-4 backdrop-blur-md cursor-auto">
+                    <div className="bg-[#111] p-6 md:p-10 rounded-2xl border border-white/10 max-w-2xl w-full relative shadow-2xl flex flex-col max-h-[90vh]">
+                        <button onClick={() => setShowAnalytics(false)} className="absolute top-6 right-6 text-gray-500 hover:text-white transition-colors bg-white/5 p-2 rounded-full"><X size={20} /></button>
+
+                        <div className="flex items-center gap-3 mb-8 border-b border-white/10 pb-6">
+                            <div className="p-3 bg-blue-500/10 rounded-xl">
+                                <BarChart3 className="text-blue-500" size={28} />
+                            </div>
+                            <div>
+                                <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tighter text-white">Site Analytics</h2>
+                                <p className="text-gray-500 text-xs md:text-sm">Báo cáo lượt truy cập website chi tiết</p>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4 mb-8">
+                            <div className="bg-[#0a0a0a] p-6 rounded-xl border border-white/5 flex flex-col justify-center relative overflow-hidden group">
+                                <div className="absolute -right-4 -bottom-4 opacity-5 group-hover:scale-110 transition-transform duration-500"><Eye size={100} /></div>
+                                <span className="text-gray-500 text-[10px] uppercase tracking-widest font-bold mb-2">Total Visits</span>
+                                <span className="text-4xl md:text-5xl font-black text-white">{siteStats.total}</span>
+                            </div>
+                            <div className="bg-[#0a0a0a] p-6 rounded-xl border border-white/5 flex flex-col justify-center relative overflow-hidden group">
+                                <div className="absolute -right-4 -bottom-4 opacity-5 group-hover:scale-110 transition-transform duration-500"><TrendingUp size={100} /></div>
+                                <span className="text-gray-500 text-[10px] uppercase tracking-widest font-bold mb-2 text-cyan-500">Today's Visits</span>
+                                <span className="text-4xl md:text-5xl font-black text-cyan-400">
+                                    {siteStats.daily[new Date().toISOString().split('T')[0]] || 0}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div className="flex-1 min-h-[250px] bg-[#0a0a0a] rounded-xl border border-white/5 p-6 flex flex-col">
+                            <h3 className="text-[10px] uppercase tracking-widest text-gray-500 font-bold mb-6">Last 14 Days Activity</h3>
+                            <div className="flex-1 flex items-end justify-between gap-1 md:gap-2">
+                                {(() => {
+                                    const days = 14;
+                                    const dates = [];
+                                    for (let i = days - 1; i >= 0; i--) {
+                                        const d = new Date();
+                                        d.setDate(d.getDate() - i);
+                                        dates.push(d.toISOString().split('T')[0]);
+                                    }
+
+                                    const maxVisits = Math.max(1, ...dates.map(d => siteStats.daily[d] || 0));
+
+                                    return dates.map((date, idx) => {
+                                        const visits = siteStats.daily[date] || 0;
+                                        const heightPercent = Math.max(5, (visits / maxVisits) * 100);
+                                        const [yyyy, mm, dd] = date.split('-');
+                                        const isToday = idx === dates.length - 1;
+
+                                        return (
+                                            <div key={date} className="flex-1 flex flex-col items-center justify-end group relative h-full">
+                                                {/* Tooltip */}
+                                                <div className="absolute -top-10 opacity-0 group-hover:opacity-100 transition-opacity bg-black border border-white/20 text-[10px] px-2 py-1 rounded whitespace-nowrap z-10 text-white shadow-xl pointer-events-none">
+                                                    {dd}/{mm}: <span className="text-cyan-400 font-bold">{visits}</span>
+                                                </div>
+
+                                                {/* Bar */}
+                                                <div
+                                                    className={`w-full rounded-t-sm transition-all duration-500 group-hover:brightness-125 ${isToday ? 'bg-gradient-to-t from-cyan-600 to-cyan-400' : 'bg-white/10 group-hover:bg-blue-500/50'}`}
+                                                    style={{ height: `${heightPercent}%` }}
+                                                ></div>
+
+                                                {/* Label */}
+                                                <div className={`mt-2 text-[8px] md:text-[10px] tracking-tighter ${isToday ? 'text-cyan-400 font-bold' : 'text-gray-600'}`}>
+                                                    {dd}/{mm}
+                                                </div>
+                                            </div>
+                                        );
+                                    });
+                                })()}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* Navigation Bar */}
             <nav className="fixed top-0 w-full z-40 px-4 md:px-8 py-4 md:py-6 flex flex-row justify-between items-center bg-gradient-to-b from-black via-black/80 to-transparent pointer-events-none">
                 <div className="pointer-events-auto flex flex-col items-start cursor-auto">
@@ -497,11 +576,11 @@ const App: React.FC = () => {
 
                                 {isFirebaseReady && (
                                     <div className="hidden lg:flex items-center gap-2 mr-1">
-                                        <div className="flex items-center gap-1 px-2 py-1 text-[10px] text-cyan-400 border border-cyan-500/30 rounded bg-cyan-900/20" title="Total Website Visits">
-                                            <Eye size={12} />
-                                            <span className="font-bold">{visitCount} Lượt</span>
-                                        </div>
-                                        <a href={`https://console.firebase.google.com/project/${firebaseConfig.projectId}/storage/rules`} target="_blank" rel="noreferrer" className="flex items-center gap-1 px-2 py-1 text-[10px] text-green-400 border border-green-500/30 rounded bg-green-900/20 hover:bg-green-900/40 transition-colors"><CheckCircle2 size={12} /><span>Cloud Ready</span></a>
+                                        <button onClick={() => setShowAnalytics(true)} className="flex items-center gap-1.5 px-3 py-1.5 text-[10px] text-cyan-400 border border-cyan-500/30 rounded-lg bg-cyan-900/20 hover:bg-cyan-900/40 transition-all group/stats" title="View Site Analytics">
+                                            <BarChart3 size={14} className="group-hover/stats:scale-110 transition-transform" />
+                                            <span className="font-bold tracking-widest">{siteStats.total}</span>
+                                        </button>
+                                        <a href={`https://console.firebase.google.com/project/${firebaseConfig.projectId}/storage/rules`} target="_blank" rel="noreferrer" className="flex items-center gap-1 px-2 py-1 text-[10px] text-green-400 border border-green-500/30 rounded-lg bg-green-900/20 hover:bg-green-900/40 transition-colors"><CheckCircle2 size={12} /></a>
                                     </div>
                                 )}
                                 <button onClick={() => setIsAdmin(false)} className="p-1.5 md:p-2 hover:bg-white/10 rounded" title="Logout"><LogOut size={16} /></button>
